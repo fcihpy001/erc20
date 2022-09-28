@@ -1,0 +1,2 @@
+cargo:rustc-env=TYPENUM_BUILD_CONSTS=/Users/fcihpy/Desktop/substrate/erc20/target/dylint/target/nightly-2022-06-30-x86_64-apple-darwin/debug/build/typenum-006ea1b6db8bb685/out/consts.rs
+cargo:rustc-env=TYPENUM_BUILD_OP=/Users/fcihpy/Desktop/substrate/erc20/target/dylint/target/nightly-2022-06-30-x86_64-apple-darwin/debug/build/typenum-006ea1b6db8bb685/out/op.rs
