@@ -1,14 +1,10 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
-type Balance = u64;
+
 #[ink::contract]
 mod erc20 {
     use ink_env::AccountId;
-    use ink_env::call::Call;
     use ink_storage::Mapping;
-    use crate::Balance;
-    use ink_lang::codegen::StaticEnv;
-    use ink_env::*;
 
     #[ink(stroage)]
     #[derive(Default)]
@@ -51,11 +47,11 @@ mod erc20 {
             let mut balances = Mapping::default();
             let caller = Self::env.caller();
             balances.insert(&caller, &total_supply);
-            // Self::env.emit_event( Transfer {
-            //     from: None,
-            //     to: Some(caller),
-            //     value: total_supply
-            // });
+            Self::env().emit_event( Transfer {
+                from: None,
+                to: Some(caller),
+                value: total_supply
+            });
             Self {
                 total_supply,
                 balances,
@@ -91,11 +87,11 @@ mod erc20 {
                         value: Balance) -> Result<()> {
             let owner = self.env().caller();
             self.allowances.insert((owner, spender), &value);
-            // self.env.emit_event( Approval {
-            //     owner,
-            //     spender,
-            //     value
-            // });
+            self.env().emit_event( Approval {
+                owner,
+                spender,
+                value
+            });
             Ok(())
         }
 
@@ -103,9 +99,8 @@ mod erc20 {
         pub fn transfer(&mut self,
                         to: AccountId,
                         value: Balance) -> Result<()> {
-            // let from = self.env().caller();
-            // self.transfer_from_to(from, to, value)?;
-            Ok(())
+            let from = self.env().caller();
+            self.transfer_from_to(from, to, value)
         }
 
         #[ink(message)]
@@ -127,16 +122,11 @@ mod erc20 {
             self.approval(from, value)?;
             let to_balance = self.balance_of(to);
             self.balances.insert(to, &to_balance);
-            // self.env().emit_event( Transfer {
-            //     from: Some(from),
-            //     to: Some(to),
-            //     value
-            // });
-            // self.env().emit_event(Transfer {
-            //     from: Some(*from),
-            //     to: Some(*to),
-            //     value,
-            // });
+            self.env().emit_event( Transfer {
+                from: Some(from),
+                to: Some(to),
+                value
+            });
             Ok(())
         }
     }
